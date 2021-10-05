@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_time_dependent_config_user,time.dependent.config.user,model_time_dependent_config,base.group_user,1,1,1,0
+access_time_dependent_user,time.dependent.user,model_time_dependent,base.group_user,1,1,1,0
+access_time_dependent_record_user,time.dependent.record.user,model_time_dependent_record,base.group_user,1,1,1,0
+access_time_dependent_config_manager,time.dependent.config.manager,model_time_dependent_config,base.group_erp_manager,1,1,1,1
+access_time_dependent_manager,time.dependent.manager,model_time_dependent,base.group_erp_manager,1,1,1,1
+access_time_dependent_record_manager,time.dependent.record.manager,model_time_dependent_record,base.group_erp_manager,1,1,1,1
+

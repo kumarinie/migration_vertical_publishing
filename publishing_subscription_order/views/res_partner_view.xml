@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--Action for Subscription Quotations smart button in Customers-->
+    <record id="act_res_partner_2_quotation_subscription" model="ir.actions.act_window">
+        <field name="name">Subscription Quotations</field>
+        <field name="res_model">sale.order</field>
+        <field name="domain">[('subscription','=',True), ('state','not in',('sale','done')), ('partner_id','child_of',active_id)]</field>
+        <field name="context">{'default_subscription':True, 'default_partner_id':active_id}</field>
+        <field name="view_ids"
+                   eval="[(5, 0, 0), (0, 0, {'view_mode': 'tree', 'view_id': ref('view_order_subscription_tree')}),
+                          (0, 0, {'view_mode': 'form', 'view_id': ref('view_order_form_subscriptions')})]"/>
+    </record>
+    <!--Action for Subscription Sales smart button in Customers-->
+    <record id="act_res_partner_2_sales_subscription" model="ir.actions.act_window">
+        <field name="name">Subscription Sales Orders</field>
+        <field name="res_model">sale.order</field>
+        <field name="domain">[('subscription','=',True), ('state','in',('sale','done')), ('partner_id','child_of',active_id)]</field>
+        <field name="context">{'default_subscription':True, 'default_partner_id':active_id}</field>
+        <field name="view_ids"
+                   eval="[(5, 0, 0), (0, 0, {'view_mode': 'tree', 'view_id': ref('view_order_subscription_tree')}),
+                          (0, 0, {'view_mode': 'form', 'view_id': ref('view_order_form_subscriptions')})]"/>
+    </record>
+    <!--Action for finding subscriptions for readers in Partners (not Customers)-->
+    <record id="act_res_partner_2_reader_subscription" model="ir.actions.act_window">
+        <field name="name">Reader subscriptions</field>
+        <field name="res_model">sale.order</field>
+        <field name="domain">[('subscription','=',True), ('state','in',('sale','done')), ('partner_shipping_id','child_of',active_id)]</field>
+        <field name="context">{'default_subscription':True, 'default_partner_shipping_id':active_id}</field>
+        <field name="view_ids"
+                   eval="[(5, 0, 0), (0, 0, {'view_mode': 'tree', 'view_id': ref('view_order_subscription_tree')}),
+                          (0, 0, {'view_mode': 'form', 'view_id': ref('view_order_form_subscriptions')})]"/>
+    </record>
+
+    <!--Inherited Action for Quotations smart button in res.partner-->
+    <!--Adding ('subscription', '=', False) in domain to filter out subscription records from regular quotations smart button-->
+    <record id="sale_advertising_order.act_res_partner_2_quotation" model="ir.actions.act_window">
+        <field name="domain">[('advertising','=',False), ('state','not in',('sale','done')), ('partner_id','child_of',active_id), ('subscription','=',False)]</field>
+    </record>
+
+    <!--Inherited Action for Sale Orders smart button in res.partner-->
+    <!--Adding ('subscription', '=', False) in domain to filter out subscription records from regular sales orders smart button-->
+    <record id="sale.act_res_partner_2_sale_order" model="ir.actions.act_window">
+        <field name="domain">[('state','in',('sale','done')), ('advertising','=',False), ('partner_id','child_of',active_id), ('subscription','=',False)]</field>
+    </record>
+
+    <record id="view_partner_form_susbcription_inherit" model="ir.ui.view">
+        <field name="name">res.partner.susbcription</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="model">res.partner</field>
+        <field type="xml" name="arch">
+            <xpath expr="//page[last()]" position="after">
+                <page name='sales_purchases' string="Subscription">
+                    <group cols="4">
+                        <group name="subscription">
+                            <field name="is_subscription_customer"/>
+                            <!--<field name="credit_limit" attrs="{'invisible': [('is_subscription_customer', '=', False)],'required': [('is_subscription_customer', '=', True)]}"/>-->
+                            <field name="subscription_customer_payment_mode_id" widget="selection" attrs="{'invisible': [('is_subscription_customer', '=', False)]}"/>
+                            <field name="property_subscription_payment_term_id" attrs="{'invisible': [('is_subscription_customer', '=', False)]}"/>
+                        </group>
+                    </group>
+                </page>
+                <page name="time_faced" string="Time dependent Address Data">
+                    <group><field name="validity_date"/></group>
+                    <separator string="Dependent Records"/>
+                    <field name="dependent_ids" readonly="1"/>
+                </page>
+            </xpath>
+            <field name="zip" position="attributes">
+                <attribute name="attrs">{'required':[('is_subscription_customer','=',True)]}</attribute>
+            </field>
+            <xpath expr="//field[@name='child_ids']/form/sheet/group/group[2]/field[@name='function']" position="after">
+                <field name="department_id" attrs="{'invisible': [('type','&lt;&gt;', 'contact')]}"/>
+            </xpath>
+            <xpath expr="//field[@name='function']" position="after">
+                <field name="department_id" attrs="{'invisible': ['|','|',('type','&lt;&gt;', 'contact'),('is_company','=', True),('parent_id','=', False)]}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="res_partner_view_buttons_subscription" model="ir.ui.view">
+        <field name="name">res.partner.susbcription</field>
+        <field name="inherit_id" ref="sale_advertising_order.res_partner_view_buttons"/>
+        <field name="model">res.partner</field>
+        <field type="xml" name="arch">
+            <xpath expr="//button[@name='%(sale_advertising_order.act_res_partner_2_quotation_adv)d']" position="after">
+                <button class="oe_stat_button" type="action" name="%(act_res_partner_2_quotation_subscription)d"
+                    attrs="{'invisible': ['|', ('customer', '=', False), ('parent_id', '!=', False)]}" context="{'search_default_quotations':1}"
+                     icon="fa-pencil-square-o">
+                    <field string="Subs. Quote(s)" name="subs_quotation_count" widget="statinfo"/>
+                </button>
+            </xpath>
+            <xpath expr="//button[@name='%(sale_advertising_order.action_orders_advertising_smart_button)d']" position="after">
+                <button class="oe_stat_button" type="action" name="%(act_res_partner_2_sales_subscription)d"
+                    attrs="{'invisible': ['|', ('customer', '=', False), ('parent_id', '!=', False)]}"
+                    icon="fa-usd">
+                    <field string="Subs. Sales" name="subs_sale_order_count" widget="statinfo"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+    
+    <!-- If partner is reader and someone else pays, then there still should be a linek to subscriptions, i.e. smart button
+         button is placed before issues because of possible relationship with a complaint (thus other inherit) -->
+    <!-- <record id="res_partner_view_buttons_reader_subscription" model="ir.ui.view">
+        <field name="name">res.partner.susbcription</field>
+        <field name="inherit_id" ref="project_issue.res_partner_issues_button_view"/>
+        <field name="model">res.partner</field>
+        <field type="xml" name="arch">
+            <xpath expr="//button[@name='%(project_issue.action_view_issues)d']" position="before">
+                <button class="oe_stat_button" type="action" name="%(act_res_partner_2_reader_subscription)d"
+                    icon="fa-truck">
+                    <field string="Reader subscriptions" name="subs_as_reader_count" widget="statinfo"/>
+                </button>
+            </xpath>
+        </field>
+    </record> -->
+
+
+    <record id="view_res_partner_filter_crm_publishing" model="ir.ui.view">
+        <field name="name">res.partner.select</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <search string="Search Partner">
+               <field name="name"
+                   filter_domain="['|','|',('name','ilike',self),('parent_id','ilike',self),('ref','=',self)]"/>
+               <field name="zip" filter_domain="['|',('zip','ilike',self),('zip','=',self)]"/>
+               <field name="email" filter_domain="['|',('email','ilike',self),('email','=',self)]"/>
+               <field name="city" filter_domain="['|',('city','ilike',self),('city','=',self)]"/>
+               <filter help="My Customers" name="my_partners" icon="terp-personal+" domain="[('user_id','=',uid)]"/>
+               <separator/>
+               <filter string="Subscription Customer" name="subscription_customer" domain="[('is_subscription_customer','=',1)]" help="Is Subscription Customer"/>
+               <separator/>
+               <filter string="Persons" name="type_person" domain="[('is_company','=',0),('type','=','contact')]"/>
+               <filter string="Invoice" name="type_invoice" domain="[('is_company','=',0),('type','=','invoice')]"/>
+               <filter string="Companies" name="type_company" domain="[('is_company','=',1)]"/>
+               <separator/>
+               <filter string="Customers" name="customer" domain="[('customer','=',1)]" help="Customer Partners"/>
+               <separator/>
+
+               <field name="category_id" string="Tag" filter_domain="[('category_id','ilike', self)]"/>
+               <field name="user_id" string="Account Manager"/>
+               <field name="parent_id" domain="[('is_company','=',1)]" operator="child_of"/>
+               <group expand="0" string="Group By...">
+                   <filter string="Account Manager" name="account_manager" icon="terp-personal" domain="[]" context="{'group_by' : 'user_id'}" />
+                   <filter string="Company" name="company" context="{'group_by': 'parent_id'}"/>
+                   <filter string="Country" name="country" context="{'group_by': 'country_id'}"/>
+               </group>
+           </search>
+        </field>
+    </record>
+
+    <record id="action_partner_form_crm_publishing" model="ir.actions.act_window">
+        <field name="name">Customers</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="context">{"search_default_customer":1, "search_default_my_partners":1, "search_default_subscription_customer":1,}</field>
+        <field name="search_view_id" ref="view_res_partner_filter_crm_publishing"/>
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            Click to add a contact in your address book.
+          </p><p>
+            OpenERP helps you easily track all activities related to
+            a customer; discussions, history of business opportunities,
+            documents, etc.
+          </p>
+        </field>
+    </record>
+
+    <record id="action_partner_form_view_publishing" model="ir.actions.act_window.view">
+        <field eval="0" name="sequence"/>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="base.res_partner_kanban_view"/>
+        <field name="act_window_id" ref="action_partner_form_crm_publishing"/>
+    </record>
+    <record id="action_partner_form_view_publishing" model="ir.actions.act_window.view">
+        <field eval="2" name="sequence"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="base.view_partner_form"/>
+        <field name="act_window_id" ref="action_partner_form_crm_publishing"/>
+    </record>
+    <record id="action_partner_tree_view1_nsm_crm_publishing" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="sale_advertising_order.view_partner_tree_nsm_crm"/>
+        <field name="act_window_id" ref="action_partner_form_crm_publishing"/>
+    </record>
+
+    <menuitem id="menu_partner_form1" parent="menu_subscription_sales_main"
+                  action="action_partner_form_crm_publishing" sequence="2"/>
+</odoo>

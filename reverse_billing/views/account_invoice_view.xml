@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+
+        <!--record id="invoice_supplier_form_revbil" model="ir.ui.view">
+            <field name="name">account.invoice.supplier.form.revbil</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_supplier_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <button name="action_invoice_open" position="attributes">
+                        <attribute name="states" >'start_wf','proforma2'</attribute>
+                    </button>
+                </data>
+            </field>
+        </record-->
+
+
+        <record id="view_account_invoice_filter_revbil" model="ir.ui.view">
+            <field name="name">account.invoice.select.revbil</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+            <field name="arch" type="xml">
+                <group position="inside">
+                        <filter string="Batch" name="batch" icon="terp-partner" domain="[]" context="{'group_by':'origin'}"
+                                groups="reverse_billing.group_module_revbil_user"/>
+                </group>
+            </field>
+        </record>
+
+    </data>
+</openerp>

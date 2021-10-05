@@ -1,0 +1,134 @@
+<?xml version="1.0"?>
+<odoo>
+    <!--Model: Tree View-->
+    <record id="view_time_dependent_model_tree" model="ir.ui.view">
+        <field name="name">time.dependent.config.tree</field>
+        <field name="model">time.dependent.config</field>
+        <field name="arch" type="xml">
+            <tree string="Time Dependent">
+                <field name="model_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <!--Model: Form View-->
+    <record id="view_time_dependent_model_form" model="ir.ui.view">
+        <field name="name">time.dependent.config.form</field>
+        <field name="model">time.dependent.config</field>
+        <field name="arch" type="xml">
+            <form string="Time Dependent">
+                <sheet>
+                    <group>
+                        <field name="model_id" options='{"no_open": True, "no_create": True}'/>
+                        <field name="field_ids" widget="many2many_tags" options='{"no_open": True, "no_create": True}' domain="[('model_id', '=', model_id), ('ttype','in',['boolean', 'char', 'text', 'integer', 'float', 'date', 'datetime', 'selection'])]" />
+                    </group>
+                    <group>
+                        <group>
+                            <field name="filter_field_id" options='{"no_open": True, "no_create": True}' domain="[('model_id', '=', model_id), ('ttype','in',['boolean'])]" />
+                        </group>
+                        <group>
+                            <field name="value" nolabel="1" attrs="{'invisible': [('filter_field_id', '=', False)]}"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!--Model: Search View-->
+    <record id="view_time_dependent_model_search" model="ir.ui.view">
+        <field name="model">time.dependent.config</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="model_id"/>
+                <filter name="model_id" string="Model"
+                        context="{'group_by': 'model_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!--Time Faced: Tree View-->
+    <record id="view_time_dependent_tree" model="ir.ui.view">
+        <field name="name">time.dependent.tree</field>
+        <field name="model">time.dependent</field>
+        <field name="arch" type="xml">
+            <tree string="Time Dependent">
+                <field name="model" invisible="1"/>
+                <field name="res_id" invisible="1"/>
+                <field name="validity_from"/>
+                <field name="validity_to"/>
+            </tree>
+        </field>
+    </record>
+
+    <!--Time Faced: Form View-->
+    <record id="view_time_dependent_form" model="ir.ui.view">
+        <field name="name">time.dependent.form</field>
+        <field name="model">time.dependent</field>
+        <field name="arch" type="xml">
+            <form string="Time Dependent">
+                <sheet>
+                    <group col="4">
+                        <field name="model" invisible="1"/>
+                        <field name="res_id" invisible="1"/>
+                        <field name="validity_from"/>
+                        <field name="validity_to"/>
+                    </group>
+                    <group>
+                        <field name="record_ids"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!--Record: Tree View-->
+    <record id="view_time_dependent_record_tree" model="ir.ui.view">
+        <field name="name">time.dependent.record.tree</field>
+        <field name="model">time.dependent.record</field>
+        <field name="arch" type="xml">
+            <tree string="Time Dependent Records">
+                <field name="field_id"/>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <!--Record: Form View-->
+    <record id="view_time_dependent_record_form" model="ir.ui.view">
+        <field name="name">time.dependent.record.form</field>
+        <field name="model">time.dependent.record</field>
+        <field name="arch" type="xml">
+            <form string="Time Dependent Records">
+                <sheet>
+                    <group>
+                        <field name="field_id"/>
+                        <field name="name" />
+                        <field name="dependent_id" invisible="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+
+    <!--Model: Action-->
+    <record id="action_time_dependent_model" model="ir.actions.act_window">
+        <field name="name">Configuration</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">time.dependent.config</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Create time depedent configuration for model and it's fields.
+            </p>
+        </field>
+    </record>
+    
+
+    <menuitem id="time_dependent_menu" name="Time Dependent" parent="base.menu_custom" />
+    <menuitem id="time_dependent" parent="time_dependent_menu" action="action_time_dependent_model" />
+
+</odoo>

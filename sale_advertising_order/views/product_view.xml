@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+
+		<!-- Product.Category Views -->
+		 <record id="product_category_tree_view_inh" model="ir.ui.view">
+				<field name="name">product.category.tree</field>
+				<field name="model">product.category</field>
+				<field name="inherit_id" ref="product.product_category_list_view"/>
+			 	<field name="groups_id" eval="[(4, ref('sale_advertising_order.group_advertising_sales_user'))]"/>
+				<field name="arch" type="xml">
+					<field name="display_name" position="replace">
+						<field name="complete_name" />
+						<field name="date_type" />
+						<field name="deadline_offset" />
+					</field>
+				</field>
+		 </record>
+
+		 <record id="product_category_form_view_inherit" model="ir.ui.view">
+				<field name="name">product.category.form.inherit</field>
+				<field name="model">product.category</field>
+				<field name="inherit_id" ref="product.product_category_form_view"/>
+			 	<field name="groups_id" eval="[(4, ref('sale_advertising_order.group_advertising_sales_user'))]"/>
+				<field name="arch" type="xml">
+					<field name="parent_id" position="after">
+						<field name="adv_parent" attrs="{'invisible':[('parent_id', '!=', False)]}"/>
+						<field name="date_type" attrs="{'required':[('adv_parent', '=', True)]}"/>
+						<field name="deadline_offset" required="1"/>
+						<field name="tag_ids" widget="many2many"/>
+					</field>
+				</field>
+		 </record>
+
+		<!-- Product.template Views -->
+
+
+		<record id="product_template_tree_view_advertising" model="ir.ui.view">
+		   	<field name="name">product.template.product.tree</field>
+		   	<field name="model">product.template</field>
+		   	<field name="inherit_id" ref="product.product_template_tree_view"/>
+			<field name="groups_id" eval="[(4, ref('sale_advertising_order.group_advertising_sales_user'))]"/>
+		   	<field name="arch" type="xml">
+			  	<field name="categ_id" position="after">
+				 	<field name="height"/>
+				 	<field name="width"/>
+				 	<field name="page_id"/>
+					<field name="space"/>
+					<field name="price_edit"/>
+					<field name="volume_discount"/>
+			  	</field>
+		   	</field>
+		</record>
+
+		<record id="product_template_form_view_advertising" model="ir.ui.view">
+		   	<field name="name">product.template.common.form</field>
+		   	<field name="model">product.template</field>
+			<field name="priority">12</field>
+		   	<field name="inherit_id" ref="product.product_template_form_view"/>
+			<field name="groups_id" eval="[(4, ref('sale_advertising_order.group_advertising_sales_user'))]"/>
+		   	<field name="arch" type="xml">
+			  	<field name="categ_id" position="after">
+				 	<field name="height"/>
+				 	<field name="width"/>
+					<field name="space"/>
+				 	<field name="page_id"/>
+					<field name="price_edit"/>
+					<field name="volume_discount"/>
+			  	</field>
+		   	</field>
+		</record>
+
+		<record id="product_template_form_view" model="ir.ui.view">
+			<field name="name">product.template.form.inherit</field>
+			<field name="model">product.template</field>
+			<field name="priority">13</field>
+			<field name="inherit_id" ref="account.product_template_form_view"/>
+			<field name="groups_id" eval="[(4, ref('sale_advertising_order.group_advertising_sales_user'))]"/>
+			<field name="arch" type="xml">
+				<page name="invoicing" position="attributes">
+					<attribute name="groups">account.group_account_invoice,sale_advertising_order.group_traffic_user</attribute>
+				</page>
+			</field>
+		 </record>
+
+	</data>
+</odoo>
