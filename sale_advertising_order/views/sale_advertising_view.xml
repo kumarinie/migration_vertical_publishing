@@ -112,6 +112,8 @@
                                         We need the sequence field to be here for new lines to be added at the correct position.
                                         TODO: at some point we want to fix this in the framework so that an invisible field is not required.
                                     -->
+                                    <group>
+                                    <group>
                                     <field name="sequence" invisible="1"/>
                                     <field name="medium" required="True"
                                                    domain="[('parent_id','=', %(sale_advertising_order.advertising_category)d)]"
@@ -133,6 +135,8 @@
                                                     <field name="name" string="Name" readonly="1"/>
                                                 </tree>
                                             </field>
+                                            </group>
+                                            <group>
                                     <field name="deadline_offset" invisible="1" />
                                             <field name="deadline_passed" invisible="1" />
                                             <field name="deadline" invisible="0" />
@@ -148,7 +152,7 @@
                                                 <tree create="true" edit="false" delete="true" copy="false">
                                                     <field name="name" string="Name" readonly="1"/>
                                                 </tree>
-                                            </field>
+                                            </field></group></group>
                                     <group>
                                         <group attrs="{'invisible': [('display_type', '!=', False)]}">
                                             <field name="product_updatable" invisible="1"/>

@@ -835,7 +835,7 @@
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale_advertising_order.view_order_form_advertising"/>
             <field name="arch" type="xml">
-                <xpath expr="//page/field[@name='order_line']/form/field[@name='ad_class']" position="attributes">
+                <xpath expr="//form/group[1]/group[1]/field[@name='ad_class']" position="attributes">
                     <attribute name="domain">[('id','child_of', medium), ('subscription_categ','=', False)]</attribute>
                 </xpath>
                 <xpath expr="//page/field[@name='order_line']/form/group/group/field[@name='product_template_id']" position="attributes">
