@@ -11,7 +11,7 @@ This module allows you to set partner invoicing frequency for advertising sale o
     'website': 'http://www.magnus.nl',
     'depends': [
                 'sale_advertising_order',
-                'mass_mail_invoice'
+
                 ],
     'data': [
                 "views/res_partner_view.xml"
